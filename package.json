@@ -1,0 +1,22 @@
+{
+  "name": "finance-flow",
+  "private": true,
+  "packageManager": "pnpm@10.30.2",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint apps --max-warnings 0",
+    "format": "prettier --write .",
+    "db:migrate": "pnpm --filter api db:migrate",
+    "db:seed": "pnpm --filter api db:seed",
+    "test": "pnpm --filter api test"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.70.1",
+    "eslint": "10.11.0",
+    "prettier": "3.9.8",
+    "@types/node": "26.6.2"
+  }
+}
