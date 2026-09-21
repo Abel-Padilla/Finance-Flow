@@ -95,6 +95,8 @@ async function main() {
   );
   app.useGlobalFilters(new ApiErrors());
   app.enableShutdownHooks();
-  await app.listen(Number(process.env.PORT || 4016), "127.0.0.1");
+  const port = process.env.PORT || 3000;
+  await app.listen(port, '0.0.0.0');
+  console.log(`API running on port ${port}`);
 }
 main();
