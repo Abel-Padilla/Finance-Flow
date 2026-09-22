@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { transactionStyle } from "../lib/financial-style";
 import Link from "next/link";
 import { Pencil, Trash2, Plus } from "lucide-react";
 import { sileo } from "sileo";
@@ -166,7 +167,7 @@ export function Transactions() {
                       </p>
                     </td>
                     <td>
-                      <span className="pill">
+                      <span className={transactionStyle(t.type).pill}>
                         {t.type === "INCOME"
                           ? "Ingreso"
                           : t.type === "EXPENSE"
@@ -176,8 +177,7 @@ export function Transactions() {
                     </td>
                     <td
                       className={
-                        "font-semibold " +
-                        (t.type === "INCOME" ? "text-emerald-600" : "")
+                        "font-semibold " + transactionStyle(t.type).amount
                       }
                     >
                       {t.type === "INCOME" ? "+" : "−"}
@@ -194,6 +194,7 @@ export function Transactions() {
                       <Button
                         variant="ghost"
                         aria-label="Eliminar movimiento"
+                        className="text-[var(--coral-text)] hover:bg-[var(--coral-soft)]"
                         onClick={() => setDeleting(t.id)}
                       >
                         <Trash2 size={15} />

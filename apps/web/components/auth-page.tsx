@@ -37,9 +37,9 @@ export function AuthPage({ register = false }: { register?: boolean }) {
           <span className="brand-mark">
             <ArrowUpRight />
           </span>
-          FinanceFlow.
+          nexum.
         </div>
-        <p className="uppercase tracking-[3px] text-emerald-300 text-xs mb-5">
+        <p className="uppercase tracking-[3px] text-white text-xs mb-5">
           MÁS CLARIDAD. MÁS TRANQUILIDAD.
         </p>
         <h1 className="!text-5xl !leading-tight mb-6">
@@ -47,7 +47,7 @@ export function AuthPage({ register = false }: { register?: boolean }) {
           <br />
           con dirección.
         </h1>
-        <p className="text-emerald-100/70 text-lg leading-8 max-w-sm">
+        <p className="text-white text-lg leading-8 max-w-sm">
           Entiende tu presente y construye el futuro que tienes en mente.
         </p>
         <div className="mt-10 space-y-4">
@@ -57,7 +57,7 @@ export function AuthPage({ register = false }: { register?: boolean }) {
             "Metas que avanzan contigo",
           ].map((t) => (
             <p key={t} className="flex gap-3 text-sm">
-              <Check size={18} className="text-emerald-300" />
+              <Check size={18} className="text-white" />
               {t}
             </p>
           ))}
@@ -123,7 +123,7 @@ export function AuthPage({ register = false }: { register?: boolean }) {
           <p className="muted mt-8 text-center text-sm">
             {register ? "¿Ya tienes cuenta?" : "¿Es tu primera vez?"}{" "}
             <Link
-              className="!text-emerald-600 font-semibold"
+              className="!text-[var(--accent-text)] font-semibold"
               href={register ? "/login" : "/register"}
             >
               {register ? "Inicia sesión" : "Crea una cuenta"}

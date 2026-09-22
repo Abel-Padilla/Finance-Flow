@@ -33,7 +33,7 @@ export function Brand() {
       <span className="brand-mark">
         <ArrowUpRight size={24} />
       </span>
-      FinanceFlow<span className="text-emerald-600">.</span>
+      nexum<span className="text-[var(--accent)]">.</span>
     </Link>
   );
 }
@@ -91,7 +91,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
         </nav>
         <div className="mt-auto pt-16">
           <div className="rounded-xl bg-[var(--soft)] p-4 mb-5">
-            <ShieldCheck size={22} className="text-emerald-600 mb-2" />
+            <ShieldCheck size={22} className="text-[var(--accent)] mb-2" />
             <p className="font-semibold text-xs">Un paso a la vez.</p>
             <p className="muted text-xs mt-2 leading-5">
               Cada movimiento cuenta para construir tu tranquilidad.
@@ -145,7 +145,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
               <p className="font-semibold text-xs">{user.name}</p>
               <p className="muted text-[10px] mt-1">Cuenta personal · MXN</p>
             </div>
-            <span className="h-9 w-9 rounded-full bg-emerald-100 text-emerald-800 grid place-items-center font-bold">
+            <span className="h-9 w-9 rounded-full bg-[var(--accent-soft)] text-[var(--accent)] grid place-items-center font-bold">
               {user.name.charAt(0).toUpperCase()}
             </span>
           </div>

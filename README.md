@@ -1,4 +1,4 @@
-# FinanceFlow
+# Nexum
 
 MVP funcional de finanzas personales en español (es-MX), con Next.js, NestJS y PostgreSQL. No usa datos simulados: cuentas, movimientos, presupuestos y metas se guardan en PostgreSQL.
 

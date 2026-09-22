@@ -99,7 +99,7 @@ export function Budget() {
               {a.bucket === "savings" ? "reservados" : "utilizados"}
             </p>
             {Number(a.actual) > Number(a.planned) && (
-              <p className="text-orange-600 text-xs mt-4">
+              <p className="text-[var(--coral-text)] text-xs mt-4">
                 Superaste el monto planificado.
               </p>
             )}

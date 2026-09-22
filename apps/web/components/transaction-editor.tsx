@@ -33,7 +33,7 @@ export function TransactionEditor({
     return (
       <div className="card empty">
         Primero agrega una cuenta.
-        <Link href="/accounts" className="!text-emerald-600 ml-2">
+        <Link href="/accounts" className="!text-[var(--accent)] ml-2">
           Ir a mis cuentas →
         </Link>
       </div>

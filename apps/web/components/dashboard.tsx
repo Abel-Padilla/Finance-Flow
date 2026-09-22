@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { transactionStyle } from "../lib/financial-style";
 import Link from "next/link";
 import {
   AreaChart,
@@ -29,12 +30,12 @@ import { money, dateLabel } from "../lib/utils";
 import { Button } from "./ui/button";
 import { Skeleton } from "./shell";
 const colors = [
-  "#0e9b79",
-  "#69c8ad",
-  "#9cdcd5",
-  "#eeae67",
-  "#858ac7",
-  "#acbdce",
+  "var(--coral)",
+  "color-mix(in srgb, var(--coral) 72%, var(--accent))",
+  "color-mix(in srgb, var(--coral) 80%, var(--warning))",
+  "var(--accent)",
+  "color-mix(in srgb, var(--accent) 65%, var(--muted))",
+  "var(--muted)",
 ];
 const labels: Record<string, string> = {
   needs: "Necesidades",
@@ -61,7 +62,7 @@ export function GoalCard({ goal: g }: { goal: any }) {
                 : "A tu ritmo"}
           </p>
         </div>
-        <span className="text-emerald-600 font-bold text-sm">
+        <span className="text-[var(--accent-text)] font-bold text-sm">
           {Number(g.progress).toFixed(0)}%
         </span>
       </div>
@@ -69,7 +70,7 @@ export function GoalCard({ goal: g }: { goal: any }) {
         <span style={{ width: Math.min(100, Number(g.progress)) + "%" }} />
       </div>
       <div className="flex justify-between text-xs mt-3">
-        <strong>{money(g.saved)}</strong>
+        <strong className="amount-saving">{money(g.saved)}</strong>
         <span className="muted">de {money(g.targetAmount)}</span>
       </div>
       <p className="muted text-xs mt-2">Te faltan {money(g.remaining)}</p>
@@ -93,7 +94,7 @@ export function RecentTable({ items }: { items: any[] }) {
             <tr key={t.id}>
               <td>
                 <div className="flex gap-3 items-center">
-                  <span className="icon-tile">
+                  <span className={transactionStyle(t.type).icon}>
                     {t.type === "INCOME" ? (
                       <ArrowDownLeft size={17} />
                     ) : t.type === "SAVING" ? (
@@ -109,12 +110,13 @@ export function RecentTable({ items }: { items: any[] }) {
               </td>
               <td className="muted">{dateLabel(t.transactionDate)}</td>
               <td>
-                <span className="pill">{labels[t.type]}</span>
+                <span className={transactionStyle(t.type).pill}>
+                  {labels[t.type]}
+                </span>
               </td>
               <td
                 className={
-                  "!text-right font-semibold " +
-                  (t.type === "INCOME" ? "text-emerald-600" : "")
+                  "!text-right font-semibold " + transactionStyle(t.type).amount
                 }
               >
                 {t.type === "INCOME" ? "+" : "−"}
@@ -131,7 +133,7 @@ export function RecentTable({ items }: { items: any[] }) {
       <br />
       <Link
         href="/transactions/new"
-        className="!text-emerald-600 inline-block mt-4"
+        className="!text-[var(--accent-text)] inline-block mt-4"
       >
         Registrar un movimiento →
       </Link>
@@ -171,7 +173,7 @@ export function Dashboard() {
           <p className="muted text-xs mb-2">UN VISTAZO A TU TRANQUILIDAD</p>
           <h1>
             Hola, {user?.name.split(" ")[0]}{" "}
-            <span className="text-emerald-600">✦</span>
+            <span className="text-[var(--accent-text)]">✦</span>
           </h1>
           <p className="muted mt-2">
             Cada decisión de hoy acerca tus planes de mañana.
@@ -194,13 +196,13 @@ export function Dashboard() {
         </div>
       </div>
       <div className="grid-kpi">
-        <div className="card !bg-[#074f40] !text-white !border-0 relative overflow-hidden">
+        <div className="card !bg-[var(--accent)] !text-[var(--on-accent)] !border-0 relative overflow-hidden">
           <div className="flex justify-between items-center">
-            <p className="text-emerald-100/75 text-xs">Saldo disponible</p>
-            <Wallet size={19} className="text-emerald-200" />
+            <p className="text-[var(--on-accent)] text-xs">Saldo disponible</p>
+            <Wallet size={19} className="text-[var(--on-accent)]" />
           </div>
           <p className="kpi-value mt-5">{money(d.available)}</p>
-          <p className="text-emerald-100/65 text-[11px] mt-4">
+          <p className="text-[var(--on-accent)] text-[11px] mt-4">
             {money(d.totalSaved)} reservados por separado
           </p>
         </div>
@@ -209,21 +211,21 @@ export function Dashboard() {
             label: "Ingresos del mes",
             value: d.income,
             icon: ArrowDownLeft,
-            color: "text-emerald-600",
+            color: "text-[var(--success)]",
             note: "Dinero que recibiste",
           },
           {
             label: "Gastos del mes",
             value: d.expenses,
             icon: ArrowUpRight,
-            color: "text-orange-500",
+            color: "text-[var(--coral)]",
             note: "Sin incluir tu ahorro",
           },
           {
             label: "Ahorro del mes",
             value: d.saved,
             icon: Target,
-            color: "text-blue-500",
+            color: "text-[var(--accent)]",
             note: `${d.savingsRate}% de tus ingresos`,
           },
         ].map((c) => (
@@ -232,7 +234,7 @@ export function Dashboard() {
               <p className="muted text-xs">{c.label}</p>
               <c.icon size={19} className={c.color} />
             </div>
-            <p className="kpi-value mt-5">{money(c.value)}</p>
+            <p className={"kpi-value mt-5 " + c.color}>{money(c.value)}</p>
             <p className="muted text-[11px] mt-4">{c.note}</p>
           </div>
         ))}
@@ -260,7 +262,15 @@ export function Dashboard() {
                 Ingresos y gastos · últimos 6 meses
               </p>
             </div>
-            <span className="pill">
+            <span
+              className={
+                Number(d.cashFlow) < 0
+                  ? "pill expense"
+                  : Number(d.cashFlow) > 0
+                    ? "pill success"
+                    : "pill"
+              }
+            >
               <TrendingUp size={13} />
               {money(d.cashFlow)} este mes
             </span>
@@ -277,8 +287,16 @@ export function Dashboard() {
               >
                 <defs>
                   <linearGradient id="income-fill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#0e9b79" stopOpacity={0.2} />
-                    <stop offset="100%" stopColor="#0e9b79" stopOpacity={0} />
+                    <stop
+                      offset="0%"
+                      stopColor="var(--success)"
+                      stopOpacity={0.2}
+                    />
+                    <stop
+                      offset="100%"
+                      stopColor="var(--success)"
+                      stopOpacity={0}
+                    />
                   </linearGradient>
                 </defs>
                 <CartesianGrid
@@ -316,7 +334,7 @@ export function Dashboard() {
                   type="monotone"
                   dataKey="income"
                   name="Ingresos"
-                  stroke="#0e9b79"
+                  stroke="var(--success)"
                   fill="url(#income-fill)"
                   strokeWidth={2.5}
                 />
@@ -324,7 +342,7 @@ export function Dashboard() {
                   type="monotone"
                   dataKey="expenses"
                   name="Gastos"
-                  stroke="#eca26a"
+                  stroke="var(--coral)"
                   fill="transparent"
                   strokeWidth={2.5}
                 />
@@ -332,8 +350,14 @@ export function Dashboard() {
             </ResponsiveContainer>
           </div>
           <div className="flex justify-center gap-5 text-xs muted">
-            <span>🟢 Ingresos</span>
-            <span>🟠 Gastos</span>
+            <span className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-[var(--success)]" />
+              Ingresos
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-[var(--coral)]" />
+              Gastos
+            </span>
           </div>
         </section>
         <section className="card">
@@ -344,7 +368,7 @@ export function Dashboard() {
                 Planificado vs. reservado o utilizado
               </p>
             </div>
-            <Link href="/budget" className="text-emerald-600">
+            <Link href="/budget" className="text-[var(--accent-text)]">
               <ArrowUpRight size={18} />
             </Link>
           </div>
@@ -373,7 +397,13 @@ export function Dashboard() {
                             ? (Number(a.actual) / Number(a.planned)) * 100
                             : 0,
                         ) + "%",
-                      background: ["#0e9b79", "#eca26a", "#7c87c7"][i],
+                      background:
+                        Number(a.actual) > Number(a.planned) &&
+                        a.bucket !== "savings"
+                          ? "var(--coral)"
+                          : ["var(--accent)", "var(--coral)", "var(--accent)"][
+                              i
+                            ],
                     }}
                   />
                 </div>
@@ -391,7 +421,7 @@ export function Dashboard() {
           <div className="section-head">
             <h2>Movimientos recientes</h2>
             <Link
-              className="text-emerald-600 text-xs flex items-center gap-1"
+              className="text-[var(--accent-text)] text-xs flex items-center gap-1"
               href="/transactions"
             >
               Ver todos <ArrowRight size={14} />
@@ -424,7 +454,16 @@ export function Dashboard() {
                         <Cell key={c.name} fill={colors[i % colors.length]} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(v) => money(Number(v))} />
+                    <Tooltip
+                      formatter={(v) => money(Number(v))}
+                      contentStyle={{
+                        background: "var(--card)",
+                        border: "1px solid var(--line)",
+                        borderRadius: 12,
+                        color: "var(--ink)",
+                      }}
+                      itemStyle={{ color: "var(--ink)" }}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -461,7 +500,7 @@ export function Dashboard() {
               Pequeños pasos, grandes posibilidades.
             </p>
           </div>
-          <Link href="/savings" className="text-emerald-600 text-xs">
+          <Link href="/savings" className="text-[var(--accent-text)] text-xs">
             Administrar metas →
           </Link>
         </div>
@@ -474,7 +513,7 @@ export function Dashboard() {
         ) : (
           <div className="empty">
             Ponle nombre a tu próximo logro.{" "}
-            <Link href="/savings" className="!text-emerald-600">
+            <Link href="/savings" className="!text-[var(--accent-text)]">
               Crea una meta →
             </Link>
           </div>
@@ -482,7 +521,7 @@ export function Dashboard() {
       </section>
       <section className="card !bg-[var(--soft)] !shadow-none">
         <div className="flex gap-3">
-          <Sparkles className="text-emerald-600 shrink-0" size={20} />
+          <Sparkles className="text-[var(--accent-text)] shrink-0" size={20} />
           <div>
             <h2>Tu resumen financiero</h2>
             <ul className="mt-3 space-y-2 muted text-sm">
@@ -494,7 +533,7 @@ export function Dashboard() {
         </div>
       </section>
       <p className="text-center muted text-[11px] pb-2">
-        FinanceFlow · Más claridad para lo que viene.
+        Nexum · Más claridad para lo que viene.
       </p>
     </div>
   );

@@ -196,6 +196,7 @@ export function Resources({ kind }: { kind: keyof typeof definitions }) {
                 </Button>
                 <Button
                   variant="ghost"
+                  className="text-[var(--coral-text)] hover:bg-[var(--coral-soft)]"
                   onClick={() => setDeleting(r.id)}
                   aria-label={"Eliminar " + r.name}
                 >

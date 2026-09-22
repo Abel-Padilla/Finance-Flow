@@ -27,7 +27,7 @@ export default function Onboarding() {
           <span
             className={
               "h-1.5 flex-1 rounded " +
-              (i <= step ? "bg-emerald-600" : "bg-[var(--line)]")
+              (i <= step ? "bg-[var(--accent)]" : "bg-[var(--line)]")
             }
             key={i}
           />
