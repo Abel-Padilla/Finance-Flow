@@ -11,6 +11,10 @@ import { Providers } from "../components/providers";
 export const metadata: Metadata = {
   title: "Nexum · Tu dinero, con dirección",
   description: "Tus cuentas, gastos y metas en un solo lugar.",
+  icons: {
+    icon: { url: "/brand/nexum-icon.svg", type: "image/svg+xml" },
+    apple: "/brand/apple-touch-icon.png",
+  },
 };
 export default function RootLayout({
   children,

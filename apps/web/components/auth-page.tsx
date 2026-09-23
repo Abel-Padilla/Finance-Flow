@@ -5,10 +5,11 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { sileo } from "sileo";
 import { DataForm, name } from "./form";
+import { BrandLogo } from "./brand-logo";
 import { Brand } from "./shell";
 import { send, setToken } from "../lib/api";
 import { useSession } from "./providers";
-import { ArrowUpRight, Check } from "lucide-react";
+import { Check } from "lucide-react";
 export function AuthPage({ register = false }: { register?: boolean }) {
   const router = useRouter(),
     { user, setUser, loading } = useSession();
@@ -33,11 +34,8 @@ export function AuthPage({ register = false }: { register?: boolean }) {
   return (
     <div className="auth">
       <aside className="auth-aside">
-        <div className="brand mb-20">
-          <span className="brand-mark">
-            <ArrowUpRight />
-          </span>
-          nexum.
+        <div className="nexum-logo-plate mb-20">
+          <BrandLogo />
         </div>
         <p className="uppercase tracking-[3px] text-white text-xs mb-5">
           MÁS CLARIDAD. MÁS TRANQUILIDAD.

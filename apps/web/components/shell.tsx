@@ -13,11 +13,11 @@ import {
   Sun,
   Moon,
   Menu,
-  ArrowUpRight,
   ShieldCheck,
 } from "lucide-react";
 import { useSession } from "./providers";
 import { api, setToken } from "../lib/api";
+import { BrandLogo } from "./brand-logo";
 import { Button } from "./ui/button";
 export const navigation = [
   ["/dashboard", "Resumen", LayoutDashboard],
@@ -30,10 +30,7 @@ export const navigation = [
 export function Brand() {
   return (
     <Link href="/dashboard" className="brand">
-      <span className="brand-mark">
-        <ArrowUpRight size={24} />
-      </span>
-      nexum<span className="text-[var(--accent)]">.</span>
+      <BrandLogo />
     </Link>
   );
 }

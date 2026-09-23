@@ -109,3 +109,7 @@ Incluye registro/login/logout, onboarding, cuentas múltiples, ingresos/gastos/a
 El presupuesto de categorías es compartido por Necesidades/Deseos: no hay sobres independientes por cada categoría. Las alertas se calculan contra esas asignaciones. No hay recuperación de contraseña, verificación de correo, MFA, importación bancaria, transferencias entre cuentas, retiros parciales de ahorro, multimoneda ni asesoría con IA. Para liberar una reserva se edita o elimina el movimiento de ahorro correspondiente. Las agregaciones cargan el historial del usuario en memoria, apropiado para un MVP personal; para grandes volúmenes deben migrarse a agregaciones SQL.
 
 Ver `VERIFICATION.md` para los resultados de las comprobaciones.
+
+## Aplicación móvil Nexum
+
+La app Expo está en `apps/mobile`. Consulta [su guía de ejecución](apps/mobile/README.md) y [la verificación móvil](MOBILE-VERIFICATION.md).

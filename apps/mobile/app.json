@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "Nexum",
+    "slug": "nexum-finance",
+    "scheme": "nexum",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.nexum.finance"
+    },
+    "android": {
+      "package": "com.nexum.finance",
+      "predictiveBackGestureEnabled": true,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/brand/adaptive-foreground.png",
+        "backgroundColor": "#5170ff"
+      }
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/brand/splash-icon.png",
+          "imageWidth": 112,
+          "resizeMode": "contain",
+          "backgroundColor": "#f7f8fc",
+          "dark": {
+            "backgroundColor": "#0d0f17"
+          }
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/brand/favicon.png"
+    },
+    "icon": "./assets/brand/app-icon.png"
+  }
+}

@@ -290,15 +290,25 @@ h2 {
   gap: 10px;
 }
 
-.brand-mark {
-  display: grid;
-  place-items: center;
-  background: var(--accent);
-  color: var(--on-accent);
-  width: 37px;
-  height: 37px;
-  border-radius: 11px;
-  box-shadow: 0 6px 16px color-mix(in srgb, var(--accent) 25%, transparent);
+.nexum-logo {
+  display: block;
+  width: 125px;
+  max-width: 100%;
+  height: auto;
+  color: #545454;
+  flex-shrink: 0;
+}
+.dark .nexum-logo {
+  color: #f2f4fa;
+}
+.nexum-logo-plate {
+  align-self: flex-start;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: #fff;
+}
+.nexum-logo-plate .nexum-logo {
+  color: #545454;
 }
 
 /* =========================================================
