@@ -23,12 +23,15 @@ import {
   TrendingUp,
   ArrowRight,
   Sparkles,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { useSession } from "./providers";
 import { useData } from "../lib/use-data";
-import { money, dateLabel } from "../lib/utils";
+import { money as formatMoney, dateLabel } from "../lib/utils";
 import { Button } from "./ui/button";
 import { Skeleton } from "./shell";
+import { useAmountVisibility } from "../lib/use-amount-visibility";
 const colors = [
   "var(--coral)",
   "color-mix(in srgb, var(--coral) 72%, var(--accent))",
@@ -45,7 +48,15 @@ const labels: Record<string, string> = {
   EXPENSE: "Gasto",
   SAVING: "Ahorro",
 };
-export function GoalCard({ goal: g }: { goal: any }) {
+export function GoalCard({
+  goal: g,
+  hideAmounts = false,
+}: {
+  goal: any;
+  hideAmounts?: boolean;
+}) {
+  const money = (value: string | number) =>
+    hideAmounts ? "••••••" : formatMoney(value);
   return (
     <div>
       <div className="flex items-center gap-3 mb-4">
@@ -77,7 +88,15 @@ export function GoalCard({ goal: g }: { goal: any }) {
     </div>
   );
 }
-export function RecentTable({ items }: { items: any[] }) {
+export function RecentTable({
+  items,
+  hideAmounts = false,
+}: {
+  items: any[];
+  hideAmounts?: boolean;
+}) {
+  const money = (value: string | number) =>
+    hideAmounts ? "••••••" : formatMoney(value);
   return items.length ? (
     <div className="table-scroll">
       <table>
@@ -141,6 +160,9 @@ export function RecentTable({ items }: { items: any[] }) {
   );
 }
 export function Dashboard() {
+  const { hidden, ready, toggle } = useAmountVisibility();
+  const money = (value: string | number) =>
+    hidden ? "••••••" : formatMoney(value);
   const { user } = useSession();
   const [month, setMonth] = useState(
     new Date()
@@ -179,7 +201,17 @@ export function Dashboard() {
             Cada decisión de hoy acerca tus planes de mañana.
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-wrap">
+          <Button
+            variant="outline"
+            disabled={!ready}
+            aria-pressed={hidden}
+            aria-label={hidden ? "Mostrar importes" : "Ocultar importes"}
+            onClick={toggle}
+          >
+            {hidden ? <Eye size={18} /> : <EyeOff size={18} />}
+            {hidden ? "Mostrar importes" : "Ocultar importes"}
+          </Button>
           <input
             className="filter !w-auto"
             aria-label="Mes del resumen"
@@ -276,78 +308,92 @@ export function Dashboard() {
             </span>
           </div>
           <div className="h-[250px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart
-                data={d.cashFlowSeries.map((r: any) => ({
-                  ...r,
-                  income: Number(r.income),
-                  expenses: Number(r.expenses),
-                }))}
-                margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
-              >
-                <defs>
-                  <linearGradient id="income-fill" x1="0" y1="0" x2="0" y2="1">
-                    <stop
-                      offset="0%"
-                      stopColor="var(--success)"
-                      stopOpacity={0.2}
-                    />
-                    <stop
-                      offset="100%"
-                      stopColor="var(--success)"
-                      stopOpacity={0}
-                    />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid
-                  vertical={false}
-                  stroke="var(--line)"
-                  strokeDasharray="3 4"
-                />
-                <XAxis
-                  dataKey="month"
-                  tick={{ fontSize: 11, fill: "var(--muted)" }}
-                  tickLine={false}
-                  axisLine={false}
-                  tickFormatter={(s) =>
-                    new Date(s + "-02").toLocaleDateString("es-MX", {
-                      month: "short",
-                    })
-                  }
-                />
-                <YAxis
-                  width={52}
-                  tick={{ fontSize: 11, fill: "var(--muted)" }}
-                  tickLine={false}
-                  axisLine={false}
-                  tickFormatter={(v) => "$" + (v >= 1000 ? v / 1000 + "k" : v)}
-                />
-                <Tooltip
-                  formatter={(v) => money(Number(v))}
-                  contentStyle={{
-                    background: "var(--card)",
-                    border: "1px solid var(--line)",
-                    borderRadius: 12,
-                  }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="income"
-                  name="Ingresos"
-                  stroke="var(--success)"
-                  fill="url(#income-fill)"
-                  strokeWidth={2.5}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="expenses"
-                  name="Gastos"
-                  stroke="var(--coral)"
-                  fill="transparent"
-                  strokeWidth={2.5}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+            {hidden ? (
+              <div className="empty" role="status">
+                Importes ocultos
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart
+                  data={d.cashFlowSeries.map((r: any) => ({
+                    ...r,
+                    income: Number(r.income),
+                    expenses: Number(r.expenses),
+                  }))}
+                  margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                >
+                  <defs>
+                    <linearGradient
+                      id="income-fill"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop
+                        offset="0%"
+                        stopColor="var(--success)"
+                        stopOpacity={0.2}
+                      />
+                      <stop
+                        offset="100%"
+                        stopColor="var(--success)"
+                        stopOpacity={0}
+                      />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid
+                    vertical={false}
+                    stroke="var(--line)"
+                    strokeDasharray="3 4"
+                  />
+                  <XAxis
+                    dataKey="month"
+                    tick={{ fontSize: 11, fill: "var(--muted)" }}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(s) =>
+                      new Date(s + "-02").toLocaleDateString("es-MX", {
+                        month: "short",
+                      })
+                    }
+                  />
+                  <YAxis
+                    width={52}
+                    tick={{ fontSize: 11, fill: "var(--muted)" }}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(v) =>
+                      "$" + (v >= 1000 ? v / 1000 + "k" : v)
+                    }
+                  />
+                  <Tooltip
+                    formatter={(v) => money(Number(v))}
+                    contentStyle={{
+                      background: "var(--card)",
+                      border: "1px solid var(--line)",
+                      borderRadius: 12,
+                    }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="income"
+                    name="Ingresos"
+                    stroke="var(--success)"
+                    fill="url(#income-fill)"
+                    strokeWidth={2.5}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="expenses"
+                    name="Gastos"
+                    stroke="var(--coral)"
+                    fill="transparent"
+                    strokeWidth={2.5}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
           </div>
           <div className="flex justify-center gap-5 text-xs muted">
             <span className="flex items-center gap-2">
@@ -427,7 +473,7 @@ export function Dashboard() {
               Ver todos <ArrowRight size={14} />
             </Link>
           </div>
-          <RecentTable items={d.recent} />
+          <RecentTable items={d.recent} hideAmounts={hidden} />
         </section>
         <section className="card">
           <div className="section-head">
@@ -437,35 +483,41 @@ export function Dashboard() {
           {d.categorySpending.length ? (
             <>
               <div className="h-44">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={d.categorySpending.map((c: any) => ({
-                        ...c,
-                        value: Number(c.amount),
-                      }))}
-                      dataKey="value"
-                      innerRadius={52}
-                      outerRadius={76}
-                      paddingAngle={4}
-                      stroke="none"
-                    >
-                      {d.categorySpending.map((c: any, i: number) => (
-                        <Cell key={c.name} fill={colors[i % colors.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip
-                      formatter={(v) => money(Number(v))}
-                      contentStyle={{
-                        background: "var(--card)",
-                        border: "1px solid var(--line)",
-                        borderRadius: 12,
-                        color: "var(--ink)",
-                      }}
-                      itemStyle={{ color: "var(--ink)" }}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
+                {hidden ? (
+                  <div className="empty" role="status">
+                    Importes ocultos
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={d.categorySpending.map((c: any) => ({
+                          ...c,
+                          value: Number(c.amount),
+                        }))}
+                        dataKey="value"
+                        innerRadius={52}
+                        outerRadius={76}
+                        paddingAngle={4}
+                        stroke="none"
+                      >
+                        {d.categorySpending.map((c: any, i: number) => (
+                          <Cell key={c.name} fill={colors[i % colors.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        formatter={(v) => money(Number(v))}
+                        contentStyle={{
+                          background: "var(--card)",
+                          border: "1px solid var(--line)",
+                          borderRadius: 12,
+                          color: "var(--ink)",
+                        }}
+                        itemStyle={{ color: "var(--ink)" }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                )}
               </div>
               <div className="space-y-3 mt-3">
                 {d.categorySpending.map((c: any, i: number) => (
@@ -507,7 +559,7 @@ export function Dashboard() {
         {d.goals.length ? (
           <div className="three-col mt-6">
             {d.goals.slice(0, 3).map((g: any) => (
-              <GoalCard key={g.id} goal={g} />
+              <GoalCard key={g.id} goal={g} hideAmounts={hidden} />
             ))}
           </div>
         ) : (
@@ -525,7 +577,10 @@ export function Dashboard() {
           <div>
             <h2>Tu resumen financiero</h2>
             <ul className="mt-3 space-y-2 muted text-sm">
-              {d.insights.map((t: string) => (
+              {(hidden
+                ? ["Muestra los importes para consultar tu resumen financiero."]
+                : d.insights
+              ).map((t: string) => (
                 <li key={t}>{t}</li>
               ))}
             </ul>

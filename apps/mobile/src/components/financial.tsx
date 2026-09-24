@@ -9,8 +9,10 @@ export function Money({
   value,
   type,
   size = "$6",
+  hidden = false,
 }: {
   value: string;
+  hidden?: boolean;
   type?: string;
   size?: "$4" | "$6" | "$8";
 }) {
@@ -30,15 +32,21 @@ export function Money({
               : "$color"
       }
     >
-      {money(value, user?.currency)}
+      {hidden ? "••••••" : money(value, user?.currency)}
     </Text>
   );
 }
-export function TransactionRow({ item: t }: { item: Transaction }) {
+export function TransactionRow({
+  item: t,
+  hideAmounts = false,
+}: {
+  item: Transaction;
+  hideAmounts?: boolean;
+}) {
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`${typeLabels[t.type]} ${t.description} ${t.amount}`}
+      accessibilityLabel={`${typeLabels[t.type]} ${t.description} ${hideAmounts ? "Importe oculto" : t.amount}`}
       onPress={() =>
         router.push({ pathname: "/transaction/[id]", params: { id: t.id } })
       }
@@ -51,7 +59,12 @@ export function TransactionRow({ item: t }: { item: Transaction }) {
               {typeLabels[t.type]} · {dateLabel(t.transactionDate)}
             </Text>
           </YStack>
-          <Money value={t.amount} type={t.type} size="$4" />
+          <Money
+            value={t.amount}
+            type={t.type}
+            size="$4"
+            hidden={hideAmounts}
+          />
         </XStack>
       </Card>
     </Pressable>

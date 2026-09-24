@@ -6,9 +6,15 @@ import {
   ScrollView,
   Alert,
   Pressable,
+  Modal,
+  View,
+  Text as NativeText,
+  FlatList,
+  Keyboard,
+  StyleSheet,
 } from "react-native";
-import { YStack, XStack, Text, Button, Spinner, Sheet } from "tamagui";
-import { ChevronDown, Check } from "@tamagui/lucide-icons";
+import { YStack, XStack, Text, Button, Spinner } from "tamagui";
+import { ChevronDown } from "@tamagui/lucide-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppearance } from "../store/theme";
 export function Screen({
@@ -175,12 +181,20 @@ export function Picker({
 }) {
   const [open, setOpen] = useState(false);
   const { colors } = useAppearance();
+  const insets = useSafeAreaInsets();
   return (
     <>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={label}
-        onPress={() => setOpen(true)}
+        accessibilityState={{ expanded: open }}
+        accessibilityValue={{
+          text: options.find((o) => o.value === value)?.label || "Seleccionar",
+        }}
+        onPress={() => {
+          Keyboard.dismiss();
+          setOpen(true);
+        }}
         style={{
           minHeight: 48,
           borderWidth: 1,
@@ -197,42 +211,121 @@ export function Picker({
           <ChevronDown size={18} color="$muted" />
         </XStack>
       </Pressable>
-      <Sheet
-        modal
-        open={open}
-        onOpenChange={setOpen}
-        dismissOnSnapToBottom
-        snapPoints={[65]}
+      <Modal
+        visible={open}
+        transparent
+        animationType="fade"
+        presentationStyle="overFullScreen"
+        onRequestClose={() => setOpen(false)}
       >
-        <Sheet.Overlay backgroundColor="rgba(0,0,0,.4)" />
-        <Sheet.Handle />
-        <Sheet.Frame backgroundColor="$surface" padding="$4" gap="$3">
-          <Text fontWeight="700" fontSize="$6">
-            {label}
-          </Text>
-          <Sheet.ScrollView>
-            {options.map((o) => (
-              <Button
-                key={o.value}
-                minHeight={48}
-                marginBottom="$2"
-                justifyContent="space-between"
-                backgroundColor={o.value === value ? "$soft" : "$surface"}
-                onPress={() => {
-                  onChange(o.value);
-                  setOpen(false);
-                }}
+        <View style={{ flex: 1, justifyContent: "flex-end" }}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Cerrar opciones"
+            onPress={() => setOpen(false)}
+            style={[
+              StyleSheet.absoluteFill,
+              { backgroundColor: "rgba(0,0,0,0.45)" },
+            ]}
+          />
+          <View
+            accessibilityViewIsModal
+            onAccessibilityEscape={() => setOpen(false)}
+            style={{
+              height: "65%",
+              padding: 20,
+              paddingBottom: Math.max(insets.bottom, 16),
+              paddingHorizontal: Math.max(insets.left, insets.right, 20),
+              borderTopLeftRadius: 24,
+              borderTopRightRadius: 24,
+              backgroundColor: colors.surface,
+            }}
+          >
+            <NativeText
+              accessibilityRole="header"
+              style={{
+                color: colors.color,
+                fontSize: 20,
+                fontWeight: "700",
+                marginBottom: 16,
+              }}
+            >
+              {label}
+            </NativeText>
+            <FlatList
+              data={options}
+              keyExtractor={(o) => o.value}
+              extraData={value}
+              style={{ flex: 1 }}
+              keyboardShouldPersistTaps="always"
+              ListEmptyComponent={
+                <NativeText
+                  style={{ color: colors.muted, paddingVertical: 20 }}
+                >
+                  No hay opciones disponibles.
+                </NativeText>
+              }
+              renderItem={({ item: o }) => (
+                <Pressable
+                  accessibilityRole="radio"
+                  accessibilityState={{ checked: o.value === value }}
+                  accessibilityLabel={o.label}
+                  onPress={() => {
+                    onChange(o.value);
+                    setOpen(false);
+                  }}
+                  style={({ pressed }) => ({
+                    minHeight: 52,
+                    padding: 14,
+                    marginBottom: 8,
+                    borderRadius: 12,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 12,
+                    backgroundColor:
+                      o.value === value || pressed
+                        ? colors.soft
+                        : colors.surface,
+                  })}
+                >
+                  <NativeText
+                    style={{ flex: 1, color: colors.color, fontSize: 16 }}
+                  >
+                    {o.label}
+                  </NativeText>
+                  {o.value === value && (
+                    <NativeText
+                      accessible={false}
+                      style={{ color: colors.accent, fontSize: 20 }}
+                    >
+                      ✓
+                    </NativeText>
+                  )}
+                </Pressable>
+              )}
+            />
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Cerrar opciones"
+              onPress={() => setOpen(false)}
+              style={{
+                minHeight: 48,
+                marginTop: 12,
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 12,
+                backgroundColor: colors.soft,
+              }}
+            >
+              <NativeText
+                style={{ color: colors.color, fontSize: 16, fontWeight: "600" }}
               >
-                {o.label}
-                {o.value === value && <Check size={18} color="$accent" />}
-              </Button>
-            ))}
-          </Sheet.ScrollView>
-          <Action secondary onPress={() => setOpen(false)}>
-            Cerrar
-          </Action>
-        </Sheet.Frame>
-      </Sheet>
+                Cerrar
+              </NativeText>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </>
   );
 }
